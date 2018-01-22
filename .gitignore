@@ -1,0 +1,8 @@
+*sqlite3
+*.pyc
+*static/
+*media/
+*env/
+*assets/.sass-cache/
+*assets/css/style.css
+local_settings.py
