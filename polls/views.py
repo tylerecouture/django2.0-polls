@@ -4,10 +4,15 @@ from django.shortcuts import render, get_object_or_404
 from .models import Question
 
 
-def index(request):
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
-    context = {'latest_question_list': latest_question_list}
-    return render(request, 'polls/index.html', context)
+class IndexView(TemplateView):
+    """ Poll index view
+    """
+    template_name = 'polls/index.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['latest_question_list'] = Question.objects.order_by('-pub_date')[:5]
+        return context
 
 
 def detail(request, question_id):
@@ -18,11 +23,6 @@ def detail(request, question_id):
 def results(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     return render(request, 'polls/results.html', {'question': question})
-
-
-# def results(request, question_id):
-#     response = "You're looking at the results of question %s."
-#     return HttpResponse(response % question_id)
 
 
 def vote(request, question_id):
@@ -42,7 +42,3 @@ def vote(request, question_id):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
-
-
-# def vote(request, question_id):
-#     return HttpResponse("You're voting on question %s." % question_id)
