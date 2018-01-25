@@ -1,8 +1,8 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import render, get_object_or_404
-from django.views.generic.base import TemplateView
+from django.shortcuts import render, reverse, get_object_or_404
+from django.views.generic import DetailView, TemplateView
 
-from .models import Question
+from .models import Question, Choice
 
 
 class IndexView(TemplateView):
@@ -34,7 +34,7 @@ class ResultView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context[question] = Question.objects.get(id=kwargs['question_id'])
+        context['question'] = Question.objects.get(id=kwargs['question_id'])
         return context
 
 
@@ -44,7 +44,7 @@ def vote(request, question_id):
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
         # Redisplay the question voting form.
-        return render(request, 'polls/detail.html', {
+        return render(request, 'polls/details.html', {
             'question': question,
             'error_message': "You didn't select a choice.",
         })
