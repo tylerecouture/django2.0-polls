@@ -1,5 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
+from django.views.generic.base import TemplateView
 
 from .models import Question
 
@@ -15,9 +16,15 @@ class IndexView(TemplateView):
         return context
 
 
-def detail(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'polls/details.html', {'question': question})
+class DetailView(TemplateView):
+    """ Polls details view
+    """
+    template_name = 'polls/details.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['question'] = Question.objects.get(id=kwargs['question_id'])
+        return context
 
 
 def results(request, question_id):
