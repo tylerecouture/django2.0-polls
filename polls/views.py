@@ -27,9 +27,15 @@ class DetailView(TemplateView):
         return context
 
 
-def results(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'polls/results.html', {'question': question})
+class ResultView(TemplateView):
+    """ Poll results view
+    """
+    template_name = 'polls/results.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context[question] = Question.objects.get(id=kwargs['question_id'])
+        return context
 
 
 def vote(request, question_id):
