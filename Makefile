@@ -1,3 +1,2 @@
-#Makefile
-test-poll:
+test:
 	python manage.py test
